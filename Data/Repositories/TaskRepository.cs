@@ -23,80 +23,148 @@ namespace Data.Repositories
         }
         public List<TaskEntity> Get()
         {
-            using var reader = new StreamReader(_filePath);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            return csv.GetRecords<TaskEntity>().OrderBy(t => t.Completed).ThenByDescending(t => t.Important).ToList();
+            try
+            {
+                using var reader = new StreamReader(_filePath);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                return csv.GetRecords<TaskEntity>().OrderBy(t => t.Completed).ThenByDescending(t => t.Important).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<TaskEntity> Get(string value)
+        {
+            try
+            {
+                var tasks = Get().Where(t => t.Title.Contains(value) || t.Description.Contains(value)).ToList();
+                return tasks;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public TaskEntity Get(int id)
         {
-            var task = Get().FirstOrDefault(t => t.Id == id);
-            if (task == null) throw new Exception("Ocurrio un error");
-            return task;
+            try
+            {
+                var task = Get().FirstOrDefault(t => t.Id == id);
+                if (task == null) throw new Exception("Ocurrio un error");
+                return task;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public void Create(TaskEntity task)
         {
-            var tasks = Get().OrderBy(t => t.Id).ToList();
             try
             {
-                task.Id = tasks.Last().Id + 1;
+                var tasks = Get().OrderBy(t => t.Id).ToList();
+                try
+                {
+                    task.Id = tasks.Last().Id + 1;
+                }
+                catch
+                {
+                    task.Id = 1;
+                }
+                tasks.Add(task);
+                SaveChanges(tasks);
             }
-            catch
+            catch (Exception)
             {
-                task.Id = 1;
+                throw;
             }
-            tasks.Add(task);
-            SaveChanges(tasks);
 
         }
         public void Update(TaskEntity task)
         {
-            var tasks = Get().OrderBy(t => t.Id).ToList();
-            var data = tasks.FirstOrDefault(x => x.Id == task.Id);
-            if (data != null)
+            try
             {
-                data.Id = task.Id;
-                data.Title = task.Title;
-                data.Description = task.Description;
-                //data.Important = task.Important;
-                //data.Completed = task.Completed;
-                data.DueDate = task.DueDate;
+                var tasks = Get().OrderBy(t => t.Id).ToList();
+                var data = tasks.FirstOrDefault(x => x.Id == task.Id);
+                if (data != null)
+                {
+                    data.Id = task.Id;
+                    data.Title = task.Title;
+                    data.Description = task.Description;
+                    //data.Important = task.Important;
+                    //data.Completed = task.Completed;
+                    data.DueDate = task.DueDate;
+                }
+                SaveChanges(tasks);
             }
-            SaveChanges(tasks);
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public void Delete(int id)
         {
-            var tasks = Get().Where(t => t.Id != id).ToList();
-            SaveChanges(tasks);
+            try
+            {
+                var tasks = Get().Where(t => t.Id != id).ToList();
+                SaveChanges(tasks);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public void updateImportant(int id, bool value)
         {
-            var tasks = Get().OrderBy(t => t.Id).ToList();
-            var data = tasks.FirstOrDefault(x => x.Id == id);
-            if (data != null)
+            try
             {
-                data.Important = value;
+                var tasks = Get().OrderBy(t => t.Id).ToList();
+                var data = tasks.FirstOrDefault(x => x.Id == id);
+                if (data != null)
+                {
+                    data.Important = value;
+                }
+                SaveChanges(tasks);
             }
-            SaveChanges(tasks);
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public void updateCompleted(int id, bool value)
         {
-            var tasks = Get().OrderBy(t => t.Id).ToList();
-            var data = tasks.FirstOrDefault(x => x.Id == id);
-            if (data != null)
+            try
             {
-                data.Completed = value;
+                var tasks = Get().OrderBy(t => t.Id).ToList();
+                var data = tasks.FirstOrDefault(x => x.Id == id);
+                if (data != null)
+                {
+                    data.Completed = value;
+                }
+                SaveChanges(tasks);
             }
-            SaveChanges(tasks);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private void SaveChanges(List<TaskEntity> tasks)
         {
-            using var writer = new StreamWriter(_filePath);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            try
+            {
+                using var writer = new StreamWriter(_filePath);
+                using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-            csv.WriteHeader<TaskEntity>();
-            csv.NextRecord();
-            csv.WriteRecords(tasks);
+                csv.WriteHeader<TaskEntity>();
+                csv.NextRecord();
+                csv.WriteRecords(tasks);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
     }

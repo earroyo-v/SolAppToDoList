@@ -10,6 +10,7 @@ namespace Data.Interfaces
     public interface ITaskData
     {
         public List<TaskEntity> Get();
+        public List<TaskEntity> Get(string value);
         public TaskEntity Get(int id);
         public void Create(TaskEntity task);
         public void Update(TaskEntity task);

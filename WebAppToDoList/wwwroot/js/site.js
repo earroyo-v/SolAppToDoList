@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const table = document.getElementById("taskContainer");
     const btnAgregar = document.getElementById("btnAdd");
     const btnEditar = document.getElementById("btnEdit");
+    const searchBar = document.getElementById("searchForm");
 
     getTable();
 
@@ -14,6 +15,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const titleView = document.getElementById("title").value;
         const descriptionView = document.getElementById("description").value;
         const dueDateView = document.getElementById("duedate").value;
+
+        if (!titleView || !descriptionView || !dueDateView) {
+            Swal.fire({
+                icon: "warning",
+                title: "Campos requeridos",
+                text: "Por favor, completa todos los campos antes de guardar."
+            });
+            return;
+        }
 
         fetch("/Task/Create", {
             method: "POST",
@@ -37,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     confirmButtonText: "Aceptar"
                 });
                 getTable();
+                document.getElementById('formUsuario').reset();
             })
             .catch(error => {
                 console.error("Hubo un error:", error);
@@ -54,17 +65,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const isImportant = icon.classList.contains("bi-star");
 
             if (isImportant) {
-                editImportant(true);
                 icon.classList.remove("bi-star", "text-secondary");
                 icon.classList.add("bi-star-fill", "text-warning");
                 item.dataset.important = "true";
-                getTable();
+                editImportant(true);
+
             } else {
-                editImportant(false);
                 icon.classList.remove("bi-star-fill", "text-warning");
                 icon.classList.add("bi-star", "text-secondary");
                 item.dataset.important = "false";
-                getTable();
+                editImportant(false);
             }
             function editImportant(important) {
                 fetch(`/Task/EditImportant/${id}`, {
@@ -73,7 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify(important)
                 })
                     .then(response => response.json())
-                    .then(data => console.log(data.message))
+                    .then(data => {
+                        console.log(data.message)
+                        getTable();
+                    })
                     .catch(error => console.error(error))
             }
         }
@@ -84,17 +97,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const isCompleted = icon.classList.contains("bi-circle");
 
             if (isCompleted) {
-                editCompleted(true);
                 icon.classList.remove("bi-circle", "text-secondary");
                 icon.classList.add("bi-check-circle-fill", "text-success");
                 item.dataset.completed = "true";
-                getTable();
+                editCompleted(true);
             } else {
-                editCompleted(false);
                 icon.classList.remove("bi-check-circle-fill", "text-success");
                 icon.classList.add("bi-circle", "text-secondary");
                 item.dataset.completed = "false";
-                getTable();
+                editCompleted(false);
             }
             function editCompleted(completed) {
                 fetch(`/Task/EditCompleted/${id}`, {
@@ -103,7 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify(completed)
                 })
                     .then(response => response.json())
-                    .then(data => console.log(data.message))
+                    .then(data => {
+                        console.log(data.message)
+                        getTable();
+                    })
                     .catch(error => console.error(error))
             }
         }
@@ -167,6 +181,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const editDescription = document.getElementById("E_description").value;
         const editDueDate = document.getElementById("E_duedate").value;
         const editId = document.getElementById("E_id").value;
+
+        if (!editTitle || !editDescription || !editDueDate) {
+            Swal.fire({
+                icon: "warning",
+                title: "Campos requeridos",
+                text: "Por favor, completa todos los campos antes de guardar."
+            });
+            return;
+        }
+
         fetch("/Task/Edit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -191,6 +215,23 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(error => console.error("Error al eliminar:", error));
     });
+
+    searchBar.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const query = document.getElementById("searchInput").value;
+        if (query.trim() === "") {
+            getTable(); // recarga todas las tareas
+            return;
+        }
+        fetch(`/Task/Search?datos=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                table.innerHTML = data.map(stringTask).join('');
+            })
+            .catch(error => console.error("Error en búsqueda:", error));
+    })
+
     function getTable() {
         fetch("/Task/Get")
             .then(response => response.json())

@@ -20,6 +20,10 @@ namespace Services.Services
         {
             return _data.Get();
         }
+        public List<TaskEntity> Obtener(string value)
+        {
+            return _data.Get(value);
+        }
         public TaskEntity Obtener(int id)
         {
             return _data.Get(id);

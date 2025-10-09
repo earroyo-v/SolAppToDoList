@@ -10,6 +10,7 @@ namespace Services.Interfaces
     public interface ITaskService
     {
         public List<TaskEntity> Obtener();
+        public List<TaskEntity> Obtener(string value);
         public TaskEntity Obtener(int id);
         public void Crear(TaskEntity task);
         public void Editar(TaskEntity task);

@@ -91,19 +91,36 @@ namespace WebAppToDoList.Controllers
         }
         [HttpPost]
         public IActionResult EditImportant(int id, [FromBody] bool value)
-        {            
+        {
             _service.editarImportante(id, value);
             return Json(new { success = true, message = "Estatus actualizado" });
         }
+        [HttpPost]
         public IActionResult EditCompleted(int id, [FromBody] bool value)
-        {            
+        {
             _service.editarCompletado(id, value);
             return Json(new { success = true, message = "Estatus actualizado" });
         }
-        public IActionResult Privacy()
+        [HttpGet]
+        public IActionResult Search(string datos)
         {
-            return View();
+            List<TaskModel> tasks = new List<TaskModel>();
+            foreach (var data in _service.Obtener(datos))
+            {
+                TaskModel task = new TaskModel()
+                {
+                    Id = data.Id,
+                    Title = data.Title,
+                    Description = data.Description,
+                    Important = data.Important,
+                    Completed = data.Completed,
+                    DueDate = data.DueDate
+                };
+                tasks.Add(task);
+            }
+            return Json(tasks);
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
