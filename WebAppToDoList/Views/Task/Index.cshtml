@@ -7,4 +7,76 @@
 
 <h1>Index</h1>
 
+@* Modal - Agregar *@
+<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#miModalAdd">Agregar</button>
+<div class="modal" id="miModalAdd" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body">
+                    <form id="formUsuario">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Titulo</label>
+                            <input type="text" class="form-control" id="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <input type="text" class="form-control" id="description" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Fecha Limite</label>
+                            <input type="date" class="form-control" id="duedate" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button id="btnAdd" type="button" class="btn btn-success">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* Modal - Editar *@
+<div class="modal" id="miModalEdit" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body">
+                    <form id="formUsuario">
+                        <input type="hidden" id="E_id" />
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Titulo</label>
+                            <input type="text" class="form-control" id="E_title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <input type="text" class="form-control" id="E_description" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Fecha Limite</label>
+                            <input type="date" class="form-control" id="E_duedate" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button id="btnEdit" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
 <div id="taskContainer" class="accordion"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

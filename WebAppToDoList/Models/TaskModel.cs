@@ -8,5 +8,16 @@
         public bool Important { get; set; }
         public bool Completed { get; set; }
         public DateTime DueDate { get; set; }
+
+        public string Fecha {
+            get
+            {
+                return DueDate.ToString("yyyy-MM-dd");
+            }
+            set
+            {
+                Fecha = value;
+            }
+        }
     }
 }

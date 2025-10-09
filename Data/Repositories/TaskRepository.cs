@@ -35,7 +35,7 @@ namespace Data.Repositories
         }
         public void Create(TaskEntity task)
         {
-            var tasks = Get();
+            var tasks = Get().OrderBy(t => t.Id).ToList();
             try
             {
                 task.Id = tasks.Last().Id + 1;
@@ -50,15 +50,15 @@ namespace Data.Repositories
         }
         public void Update(TaskEntity task)
         {
-            var tasks = Get();
+            var tasks = Get().OrderBy(t => t.Id).ToList();
             var data = tasks.FirstOrDefault(x => x.Id == task.Id);
             if (data != null)
             {
                 data.Id = task.Id;
                 data.Title = task.Title;
                 data.Description = task.Description;
-                data.Important = task.Important;
-                data.Completed = task.Completed;
+                //data.Important = task.Important;
+                //data.Completed = task.Completed;
                 data.DueDate = task.DueDate;
             }
             SaveChanges(tasks);
@@ -68,14 +68,35 @@ namespace Data.Repositories
             var tasks = Get().Where(t => t.Id != id).ToList();
             SaveChanges(tasks);
         }
+        public void updateImportant(int id, bool value)
+        {
+            var tasks = Get().OrderBy(t => t.Id).ToList();
+            var data = tasks.FirstOrDefault(x => x.Id == id);
+            if (data != null)
+            {
+                data.Important = value;
+            }
+            SaveChanges(tasks);
+        }
+        public void updateCompleted(int id, bool value)
+        {
+            var tasks = Get().OrderBy(t => t.Id).ToList();
+            var data = tasks.FirstOrDefault(x => x.Id == id);
+            if (data != null)
+            {
+                data.Completed = value;
+            }
+            SaveChanges(tasks);
+        }
+
         private void SaveChanges(List<TaskEntity> tasks)
         {
             using var writer = new StreamWriter(_filePath);
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
             csv.WriteHeader<TaskEntity>();
-            writer.WriteLine();
-            csv.WriteRecords(tasks.OrderBy(t => t.Id).ToList());
+            csv.NextRecord();
+            csv.WriteRecords(tasks);
         }
 
     }

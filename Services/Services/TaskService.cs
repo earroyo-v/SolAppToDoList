@@ -32,9 +32,17 @@ namespace Services.Services
         {
             _data.Update(task);
         }
-        public void Delete(int id)
+        public void Eliminar(int id)
         {
             _data.Delete(id);
+        }
+        public void editarImportante(int id, bool value)
+        {
+            _data.updateImportant(id, value);
+        }
+        public void editarCompletado(int id, bool value)
+        {
+            _data.updateCompleted(id, value);
         }
     }
 }

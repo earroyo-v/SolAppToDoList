@@ -14,5 +14,7 @@ namespace Data.Interfaces
         public void Create(TaskEntity task);
         public void Update(TaskEntity task);
         public void Delete(int id);
+        public void updateImportant(int id, bool value);
+        public void updateCompleted(int id, bool value);
     }
 }

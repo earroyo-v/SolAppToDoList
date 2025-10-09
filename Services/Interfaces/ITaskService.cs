@@ -13,6 +13,8 @@ namespace Services.Interfaces
         public TaskEntity Obtener(int id);
         public void Crear(TaskEntity task);
         public void Editar(TaskEntity task);
-        public void Delete(int id);
+        public void Eliminar(int id);
+        public void editarImportante(int id, bool value);
+        public void editarCompletado(int id, bool value);
     }
 }

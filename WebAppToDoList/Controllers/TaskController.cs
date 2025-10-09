@@ -19,6 +19,7 @@ namespace WebAppToDoList.Controllers
         {
             return View();
         }
+        [HttpGet]
         public IActionResult Get()
         {
             List<TaskModel> tasks = new List<TaskModel>();
@@ -37,6 +38,22 @@ namespace WebAppToDoList.Controllers
             }
             return Json(tasks);
         }
+        [HttpGet]
+        public IActionResult GetId(int id)
+        {
+            var data = _service.Obtener(id);
+            TaskModel task = new TaskModel()
+            {
+                Id = data.Id,
+                Title = data.Title,
+                Description = data.Description,
+                Important = data.Important,
+                Completed = data.Completed,
+                DueDate = data.DueDate
+            };
+            return Json(task);
+        }
+        [HttpPost]
         public IActionResult Create([FromBody] TaskModel data)
         {
             var task = new TaskEntity()
@@ -51,6 +68,7 @@ namespace WebAppToDoList.Controllers
             _service.Crear(task);
             return Json(new { success = true, message = "Tarea creada" });
         }
+        [HttpPost]
         public IActionResult Edit([FromBody] TaskModel data)
         {
             var task = new TaskEntity()
@@ -58,17 +76,29 @@ namespace WebAppToDoList.Controllers
                 Id = data.Id,
                 Title = data.Title,
                 Description = data.Description,
-                Important = data.Important,
-                Completed = data.Completed,
+                //Important = data.Important,
+                //Completed = data.Completed,
                 DueDate = data.DueDate
             };
             _service.Editar(task);
             return Json(new { success = true, message = "Tarea actualizada" });
         }
+        [HttpPost]
         public IActionResult Delete(int id)
         {
-            _service.Delete(id);
+            _service.Eliminar(id);
             return Json(new { success = true, message = "Tarea eliminada" });
+        }
+        [HttpPost]
+        public IActionResult EditImportant(int id, [FromBody] bool value)
+        {            
+            _service.editarImportante(id, value);
+            return Json(new { success = true, message = "Estatus actualizado" });
+        }
+        public IActionResult EditCompleted(int id, [FromBody] bool value)
+        {            
+            _service.editarCompletado(id, value);
+            return Json(new { success = true, message = "Estatus actualizado" });
         }
         public IActionResult Privacy()
         {
