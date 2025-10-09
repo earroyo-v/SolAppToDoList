@@ -22,91 +22,35 @@ namespace WebAppToDoList.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            List<TaskModel> tasks = new List<TaskModel>();
-            foreach (var data in _service.Obtener())
+            try
             {
-                TaskModel task = new TaskModel()
+                List<TaskModel> tasks = new List<TaskModel>();
+                foreach (var data in _service.Obtener())
                 {
-                    Id = data.Id,
-                    Title = data.Title,
-                    Description = data.Description,
-                    Important = data.Important,
-                    Completed = data.Completed,
-                    DueDate = data.DueDate
-                };
-                tasks.Add(task);
+                    TaskModel task = new TaskModel()
+                    {
+                        Id = data.Id,
+                        Title = data.Title,
+                        Description = data.Description,
+                        Important = data.Important,
+                        Completed = data.Completed,
+                        DueDate = data.DueDate
+                    };
+                    tasks.Add(task);
+                }
+                return Json(new { success = true, obj = tasks });
             }
-            return Json(tasks);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
         [HttpGet]
         public IActionResult GetId(int id)
         {
-            var data = _service.Obtener(id);
-            TaskModel task = new TaskModel()
+            try
             {
-                Id = data.Id,
-                Title = data.Title,
-                Description = data.Description,
-                Important = data.Important,
-                Completed = data.Completed,
-                DueDate = data.DueDate
-            };
-            return Json(task);
-        }
-        [HttpPost]
-        public IActionResult Create([FromBody] TaskModel data)
-        {
-            var task = new TaskEntity()
-            {
-                Id = data.Id,
-                Title = data.Title,
-                Description = data.Description,
-                Important = data.Important,
-                Completed = data.Completed,
-                DueDate = data.DueDate
-            };
-            _service.Crear(task);
-            return Json(new { success = true, message = "Tarea creada" });
-        }
-        [HttpPost]
-        public IActionResult Edit([FromBody] TaskModel data)
-        {
-            var task = new TaskEntity()
-            {
-                Id = data.Id,
-                Title = data.Title,
-                Description = data.Description,
-                //Important = data.Important,
-                //Completed = data.Completed,
-                DueDate = data.DueDate
-            };
-            _service.Editar(task);
-            return Json(new { success = true, message = "Tarea actualizada" });
-        }
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            _service.Eliminar(id);
-            return Json(new { success = true, message = "Tarea eliminada" });
-        }
-        [HttpPost]
-        public IActionResult EditImportant(int id, [FromBody] bool value)
-        {
-            _service.editarImportante(id, value);
-            return Json(new { success = true, message = "Estatus actualizado" });
-        }
-        [HttpPost]
-        public IActionResult EditCompleted(int id, [FromBody] bool value)
-        {
-            _service.editarCompletado(id, value);
-            return Json(new { success = true, message = "Estatus actualizado" });
-        }
-        [HttpGet]
-        public IActionResult Search(string datos)
-        {
-            List<TaskModel> tasks = new List<TaskModel>();
-            foreach (var data in _service.Obtener(datos))
-            {
+                var data = _service.Obtener(id);
                 TaskModel task = new TaskModel()
                 {
                     Id = data.Id,
@@ -116,11 +60,122 @@ namespace WebAppToDoList.Controllers
                     Completed = data.Completed,
                     DueDate = data.DueDate
                 };
-                tasks.Add(task);
+                return Json(new { success = true, obj = task });
             }
-            return Json(tasks);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
-
+        [HttpPost]
+        public IActionResult Create([FromBody] TaskModel data)
+        {
+            try
+            {
+                var task = new TaskEntity()
+                {
+                    Id = data.Id,
+                    Title = data.Title,
+                    Description = data.Description,
+                    Important = data.Important,
+                    Completed = data.Completed,
+                    DueDate = data.DueDate
+                };
+                _service.Crear(task);
+                return Json(new { success = true, message = "Tarea creada" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public IActionResult Edit([FromBody] TaskModel data)
+        {
+            try
+            {
+                var task = new TaskEntity()
+                {
+                    Id = data.Id,
+                    Title = data.Title,
+                    Description = data.Description,
+                    //Important = data.Important,
+                    //Completed = data.Completed,
+                    DueDate = data.DueDate
+                };
+                _service.Editar(task);
+                return Json(new { success = true, message = "Tarea actualizada" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                _service.Eliminar(id);
+                return Json(new { success = true, message = "Tarea eliminada" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public IActionResult EditImportant(int id, [FromBody] bool value)
+        {
+            try
+            {
+                _service.editarImportante(id, value);
+                return Json(new { success = true, message = "Estatus actualizado" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public IActionResult EditCompleted(int id, [FromBody] bool value)
+        {
+            try
+            {
+                _service.editarCompletado(id, value);
+                return Json(new { success = true, message = "Estatus actualizado" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public IActionResult Search(string datos)
+        {
+            try
+            {
+                List<TaskModel> tasks = new List<TaskModel>();
+                foreach (var data in _service.Obtener(datos))
+                {
+                    TaskModel task = new TaskModel()
+                    {
+                        Id = data.Id,
+                        Title = data.Title,
+                        Description = data.Description,
+                        Important = data.Important,
+                        Completed = data.Completed,
+                        DueDate = data.DueDate
+                    };
+                    tasks.Add(task);
+                }
+                return Json(new { success = true, obj = tasks });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

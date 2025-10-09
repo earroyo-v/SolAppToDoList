@@ -30,10 +30,18 @@ namespace Services.Services
         }
         public void Crear(TaskEntity task)
         {
+            if (task.DueDate.Date < DateTime.Now.Date)
+            {
+                throw new Exception("No se puede elegir una fecha anterior a la actual");
+            }
             _data.Create(task);
         }
         public void Editar(TaskEntity task)
         {
+            if (task.DueDate.Date < DateTime.Now.Date)
+            {
+                throw new Exception("No se puede elegir una fecha anterior a la actual");
+            }
             _data.Update(task);
         }
         public void Eliminar(int id)

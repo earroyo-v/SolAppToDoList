@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnAgregar = document.getElementById("btnAdd");
     const btnEditar = document.getElementById("btnEdit");
     const searchBar = document.getElementById("searchForm");
+    const modal = bootstrap.Modal.getInstance(document.getElementById("miModalAdd"));
 
     getTable();
 
@@ -38,16 +39,29 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
             .then(data => {
-                console.log("Usuario creado:", data);
-                modal.hide();
-                Swal.fire({
-                    title: "¡Tarea Creada!",
-                    text: "La tarea se creo con éxito.",
-                    icon: "success",
-                    confirmButtonText: "Aceptar"
-                });
-                getTable();
-                document.getElementById('formUsuario').reset();
+                if (data.success) {
+                    console.log("Usuario creado:", data);
+                    modal.hide();
+                    Swal.fire({
+                        title: "¡Tarea Creada!",
+                        text: "La tarea se creo con éxito.",
+                        icon: "success",
+                        confirmButtonText: "Aceptar"
+                    });
+                    getTable();
+                    document.getElementById('formUsuario').reset();
+                }
+                else {
+                    modal.hide();
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: data.message,
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    });
+                    getTable();
+                    document.getElementById('formUsuario').reset();
+                }
             })
             .catch(error => {
                 console.error("Hubo un error:", error);
@@ -84,8 +98,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data.message)
-                        getTable();
+                        if (data.success) {
+                            console.log(data.message)
+                            getTable();
+                        }
+                        else {
+                            Swal.fire({
+                                title: "¡Error!",
+                                text: data.message,
+                                icon: "error",
+                                confirmButtonText: "Aceptar"
+                            });
+                        }
                     })
                     .catch(error => console.error(error))
             }
@@ -115,8 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data.message)
-                        getTable();
+                        if (data.success) {
+                            console.log(data.message)
+                            getTable();
+                        }
+                        else {
+                            Swal.fire({
+                                title: "¡Error!",
+                                text: data.message,
+                                icon: "error",
+                                confirmButtonText: "Aceptar"
+                            });
+                        }
                     })
                     .catch(error => console.error(error))
             }
@@ -130,11 +164,21 @@ document.addEventListener("DOMContentLoaded", () => {
             fetch(`/Task/GetId/${id}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
-                    editTitle.value = data.title;
-                    editDescription.value = data.description;
-                    editDueDate.value = data.fecha;
-                    editId.value = data.id;
+                    if (data.success) {
+                        console.log(data);
+                        editTitle.value = data.obj.title;
+                        editDescription.value = data.obj.description;
+                        editDueDate.value = data.obj.fecha;
+                        editId.value = data.obj.id;
+                    }
+                    else {
+                        Swal.fire({
+                            title: "¡Error!",
+                            text: data.message,
+                            icon: "error",
+                            confirmButtonText: "Aceptar"
+                        });
+                    }
                 })
                 .catch(error => {
                     console.error(error);
@@ -160,14 +204,24 @@ document.addEventListener("DOMContentLoaded", () => {
                     fetch(`/Task/Delete/${id}`, { method: "POST" })
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data);
-                            getTable();
-                            Swal.fire({
-                                title: "¡Elimnado!",
-                                text: "La tarea se Elimino con éxito.",
-                                icon: "success",
-                                confirmButtonText: "Aceptar"
-                            });
+                            if (data.success) {
+                                console.log(data);
+                                getTable();
+                                Swal.fire({
+                                    title: "¡Elimnado!",
+                                    text: "La tarea se Elimino con éxito.",
+                                    icon: "success",
+                                    confirmButtonText: "Aceptar"
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    title: "¡Error!",
+                                    text: data.message,
+                                    icon: "error",
+                                    confirmButtonText: "Aceptar"
+                                });
+                            }
                         })
                         .catch(error => console.error("Error al eliminar:", error));
                 }
@@ -203,15 +257,28 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                modal.hide();
-                Swal.fire({
-                    title: "¡Tarea Actualizada!",
-                    text: "La tarea se Actualizo con éxito.",
-                    icon: "success",
-                    confirmButtonText: "Aceptar"
-                });
-                getTable();
+                if (data.success) {
+                    console.log(data);
+                    modal.hide();
+                    Swal.fire({
+                        title: "¡Tarea Actualizada!",
+                        text: "La tarea se Actualizo con éxito.",
+                        icon: "success",
+                        confirmButtonText: "Aceptar"
+                    });
+                    getTable();
+                }
+                else {
+                    modal.hide();
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: data.message,
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    });
+                    getTable();
+                    //document.getElementById('formUsuario').reset();
+                }
             })
             .catch(error => console.error("Error al eliminar:", error));
     });
@@ -226,8 +293,18 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`/Task/Search?datos=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                table.innerHTML = data.map(stringTask).join('');
+                if (data.success) {
+                    console.log(data);
+                    table.innerHTML = data.obj.map(stringTask).join('');
+                }
+                else {
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: data.message,
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    });
+                }
             })
             .catch(error => console.error("Error en búsqueda:", error));
     })
@@ -236,8 +313,18 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("/Task/Get")
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                table.innerHTML = data.map(stringTask).join('');
+                if (data.success) {
+                    console.log(data);
+                    table.innerHTML = data.obj.map(stringTask).join('');
+                }
+                else {
+                    Swal.fire({
+                        title: "¡Error!",
+                        text: data.message,
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    });
+                }
             })
             .catch(error => {
                 console.error("Hubo un error:", error);
