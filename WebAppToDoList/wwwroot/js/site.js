@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const query = document.getElementById("searchInput").value;
         if (query.trim() === "") {
-            getTable(); // recarga todas las tareas
+            getTable();
             return;
         }
         fetch(`/Task/Search?datos=${encodeURIComponent(query)}`)
